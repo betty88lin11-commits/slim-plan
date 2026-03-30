@@ -285,11 +285,21 @@ input:focus{border-color:var(--tx);}
     </div>
   </div>
   <div class="card">
-    <div class="clbl">三餐目標（3：4：3）</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div class="clbl" style="margin-bottom:0">三餐熱量分配</div>
+      <select id="ratio-sel" onchange="setRatio(this.value)" style="font-size:12px;padding:4px 8px;border-radius:var(--rs);border:1px solid var(--bdr);background:var(--sur2);color:var(--tx);outline:none;font-family:'Noto Sans TC',sans-serif;">
+        <option value="3:4:3">均等 3：4：3</option>
+        <option value="2:4:4">早少午多晚多 2：4：4</option>
+        <option value="3:3:4">早午少晚多 3：3：4</option>
+        <option value="4:4:2">早多午多晚少 4：4：2</option>
+        <option value="4:3:3">早多午晚少 4：3：3</option>
+        <option value="3:5:2">午最大 3：5：2</option>
+      </select>
+    </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
-      <div><div style="font-size:11px;color:var(--tx3);margin-bottom:3px">早餐 30%</div><div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace" id="hml-b">–</div><div style="font-size:10px;color:var(--tx3)">卡</div></div>
-      <div><div style="font-size:11px;color:var(--tx3);margin-bottom:3px">午餐 40%</div><div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace" id="hml-l">–</div><div style="font-size:10px;color:var(--tx3)">卡</div></div>
-      <div><div style="font-size:11px;color:var(--tx3);margin-bottom:3px">晚餐 30%</div><div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace" id="hml-d">–</div><div style="font-size:10px;color:var(--tx3)">卡</div></div>
+      <div><div style="font-size:11px;color:var(--tx3);margin-bottom:3px" id="ratio-lbl-b">早餐</div><div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace" id="hml-b">–</div><div style="font-size:10px;color:var(--tx3)">卡</div></div>
+      <div><div style="font-size:11px;color:var(--tx3);margin-bottom:3px" id="ratio-lbl-l">午餐</div><div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace" id="hml-l">–</div><div style="font-size:10px;color:var(--tx3)">卡</div></div>
+      <div><div style="font-size:11px;color:var(--tx3);margin-bottom:3px" id="ratio-lbl-d">晚餐</div><div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace" id="hml-d">–</div><div style="font-size:10px;color:var(--tx3)">卡</div></div>
     </div>
   </div>
 </div>
@@ -399,13 +409,13 @@ input:focus{border-color:var(--tx);}
   <div style="height:12px"></div>
   <div class="card">
     <div class="clbl">新增量測紀錄</div>
-    <div class="ir"><div class="irlbl">體重</div><input type="number" id="w-weight" placeholder="70" step="0.1"><div class="irunit">kg</div></div>
+    <div class="ir"><div class="irlbl">體重</div><input type="number" inputmode="decimal" id="w-weight" placeholder="70" step="0.1"><div class="irunit">kg</div></div>
     <div class="div"></div>
     <div class="hint">從計算網站取得以下數值 ↓</div>
-    <div class="ir"><div class="irlbl">BMR</div><input type="number" id="w-bmr" placeholder="1426"><div class="irunit">卡</div></div>
-    <div class="ir"><div class="irlbl">TDEE</div><input type="number" id="w-tdee" placeholder="1640" oninput="updCB()"><div class="irunit">卡</div></div>
-    <div class="ir"><div class="irlbl">LBM 去脂體重</div><input type="number" id="w-lbm" placeholder="42" step="0.1" oninput="updCB()"><div class="irunit">kg</div></div>
-    <div class="ir"><div class="irlbl">FM 體脂重</div><input type="number" id="w-fm" placeholder="28" step="0.1"><div class="irunit">kg</div></div>
+    <div class="ir"><div class="irlbl">BMR</div><input type="number" inputmode="decimal" id="w-bmr" placeholder="1426"><div class="irunit">卡</div></div>
+    <div class="ir"><div class="irlbl">TDEE</div><input type="number" inputmode="decimal" id="w-tdee" placeholder="1640" oninput="updCB()"><div class="irunit">卡</div></div>
+    <div class="ir"><div class="irlbl">LBM 去脂體重</div><input type="number" inputmode="decimal" id="w-lbm" placeholder="42" step="0.1" oninput="updCB()"><div class="irunit">kg</div></div>
+    <div class="ir"><div class="irlbl">FM 體脂重</div><input type="number" inputmode="decimal" id="w-fm" placeholder="28" step="0.1"><div class="irunit">kg</div></div>
     <div class="div"></div>
     <div class="cb">
       <div class="cbt">自動計算三大營養素目標（TDEE - 200 卡）</div>
@@ -477,7 +487,7 @@ input:focus{border-color:var(--tx);}
       <div class="div" style="margin:6px 0"></div>
       <div class="gr">
         <div class="grlbl" id="sname" style="font-size:13px;color:var(--tx)">尚未選擇</div>
-        <input class="grinp" type="number" id="lgram" value="100" oninput="updLP()">
+        <input class="grinp" type="number" inputmode="decimal" id="lgram" value="100" oninput="updLP()">
         <span style="font-size:12px;color:var(--tx3)">g</span>
       </div>
       <div class="prev">
@@ -491,14 +501,20 @@ input:focus{border-color:var(--tx);}
 
     <!-- Manual tab -->
     <div id="tab-man" style="display:none">
-      <div class="hint">填入食材名稱、份量，以及每100g的數值（從Fitnesspal查詢）</div>
+      <div class="hint">照食品標示填入，系統自動換算實際攝取量</div>
       <div class="mfr"><span class="mflbl">食材名稱</span><input class="mfinp" type="text" id="m-name" placeholder="例：鯛魚片"></div>
-      <div class="mfr"><span class="mflbl">份量</span><input class="mfinp" type="number" id="m-gram" value="100" oninput="updMP()"><span class="mfu">g</span></div>
-      <div style="font-size:11px;color:var(--tx3);margin:4px 0">以下為每100g的數值 ↓</div>
-      <div class="mfr"><span class="mflbl">熱量</span><input class="mfinp" type="number" id="m-cal" placeholder="0" oninput="updMP()"><span class="mfu">卡</span></div>
-      <div class="mfr"><span class="mflbl">蛋白質</span><input class="mfinp" type="number" id="m-pro" placeholder="0" oninput="updMP()"><span class="mfu">g</span></div>
-      <div class="mfr"><span class="mflbl">脂肪</span><input class="mfinp" type="number" id="m-fat" placeholder="0" oninput="updMP()"><span class="mfu">g</span></div>
-      <div class="mfr"><span class="mflbl">碳水</span><input class="mfinp" type="number" id="m-carb" placeholder="0" oninput="updMP()"><span class="mfu">g</span></div>
+      <div style="background:var(--sur2);border-radius:var(--rs);padding:10px 12px;margin-bottom:8px">
+        <div style="font-size:11px;color:var(--tx3);margin-bottom:8px;font-weight:500">📋 食品標示上的數值</div>
+        <div class="mfr"><span class="mflbl">每份份量</span><input class="mfinp" type="number" inputmode="decimal" id="m-serving" placeholder="100" oninput="updMP()"><span class="mfu">g</span></div>
+        <div class="mfr"><span class="mflbl">熱量</span><input class="mfinp" type="number" inputmode="decimal" id="m-cal" placeholder="0" oninput="updMP()"><span class="mfu">卡</span></div>
+        <div class="mfr"><span class="mflbl">蛋白質</span><input class="mfinp" type="number" inputmode="decimal" id="m-pro" placeholder="0" oninput="updMP()"><span class="mfu">g</span></div>
+        <div class="mfr"><span class="mflbl">脂肪</span><input class="mfinp" type="number" inputmode="decimal" id="m-fat" placeholder="0" oninput="updMP()"><span class="mfu">g</span></div>
+        <div class="mfr"><span class="mflbl">碳水</span><input class="mfinp" type="number" inputmode="decimal" id="m-carb" placeholder="0" oninput="updMP()"><span class="mfu">g</span></div>
+      </div>
+      <div style="background:var(--sur2);border-radius:var(--rs);padding:10px 12px;margin-bottom:8px">
+        <div style="font-size:11px;color:var(--tx3);margin-bottom:8px;font-weight:500">🍽️ 實際吃的份量</div>
+        <div class="mfr"><span class="mflbl">實際份量</span><input class="mfinp" type="number" inputmode="decimal" id="m-gram" value="100" oninput="updMP()"><span class="mfu">g</span></div>
+      </div>
       <div class="prev">
         <div class="pvi"><div class="pvv" id="mp-cal">–</div><div class="pvl">熱量</div></div>
         <div class="pvi"><div class="pvv" id="mp-pro">–</div><div class="pvl">蛋白質g</div></div>
@@ -520,7 +536,21 @@ input:focus{border-color:var(--tx);}
 let P='bao', CUR_MEAL='', CUR_MODAL_TARGET='', SEL=-1;
 let LD=new Date(); LD.setHours(0,0,0,0);
 let CALC_MEAL='breakfast';
-let CALC_ITEMS=[];  // { name, gram, cal, pro, fat, carb (all per actual gram) }
+let CALC_ITEMS=[];
+let MEAL_RATIO={b:0.3,l:0.4,d:0.3}; // default 3:4:3
+
+function setRatio(val){
+  const parts=val.split(':').map(Number);
+  const total=parts[0]+parts[1]+parts[2];
+  MEAL_RATIO={b:parts[0]/total,l:parts[1]/total,d:parts[2]/total};
+  sj('dt_meal_ratio',val);
+  refreshHome();refreshLog();renderCalc();
+}
+function loadRatio(){
+  const saved=lj('dt_meal_ratio','3:4:3');
+  el('ratio-sel').value=saved;
+  setRatio(saved);
+}
 
 const dk=d=>d.toISOString().split('T')[0];
 const lj=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}};
@@ -560,28 +590,7 @@ function getTargets() {
 // ═══════════════════════════════════════════
 // FOOD LIBRARY
 // ═══════════════════════════════════════════
-const DF=[
-  {name:'桂格大燕麥片',cal:389,pro:12.9,fat:7.7,carb:67.2},
-  {name:'無糖豆漿',cal:32,pro:3.4,fat:1.9,carb:0.7},
-  {name:'福樂鮮奶優格(無糖)',cal:65,pro:4.0,fat:3.5,carb:4.0},
-  {name:'安麗蛋白粉(每匙10g)',cal:380,pro:70,fat:5,carb:10},// per 100g equiv
-  {name:'奇亞籽',cal:486,pro:17.0,fat:31.0,carb:4.4},
-  {name:'核桃',cal:654,pro:15.2,fat:65.2,carb:13.7},
-  {name:'鮭魚',cal:208,pro:20.4,fat:13.4,carb:0},
-  {name:'鯛魚',cal:100,pro:20.0,fat:1.7,carb:0},
-  {name:'蝦仁',cal:85,pro:18.0,fat:0.9,carb:0.9},
-  {name:'透抽/花枝',cal:92,pro:15.6,fat:1.4,carb:3.1},
-  {name:'雞胸肉',cal:165,pro:31.0,fat:3.6,carb:0},
-  {name:'雞蛋',cal:155,pro:13.0,fat:11.0,carb:1.1},
-  {name:'白飯',cal:130,pro:2.7,fat:0.3,carb:28.2},
-  {name:'糙米飯',cal:111,pro:2.6,fat:0.9,carb:23.0},
-  {name:'地瓜',cal:86,pro:1.6,fat:0.1,carb:20.1},
-  {name:'南瓜',cal:26,pro:1.0,fat:0.1,carb:6.5},
-  {name:'花椰菜',cal:34,pro:2.8,fat:0.4,carb:6.6},
-  {name:'菠菜',cal:23,pro:2.9,fat:0.4,carb:3.6},
-  {name:'豆腐',cal:76,pro:8.1,fat:4.2,carb:1.9},
-  {name:'橄欖油',cal:884,pro:0,fat:100,carb:0},
-];
+const DF=[];
 function getFoods(q='') {
   const all=[...DF,...lj('dt_cf',[])];
   if(!q) return all;
@@ -658,9 +667,13 @@ function refreshHome(){
   el('hm-in').innerHTML=(tgt.cal||'–')+' <span class="mcu">卡</span>';
   el('hm-lbm').innerHTML=(p.lbm||'–')+' <span class="mcu">kg</span>';
   el('hm-fm').innerHTML=(p.fm||'–')+' <span class="mcu">kg</span>';
-  el('hml-b').textContent=tgt.cal?Math.round(tgt.cal*.3):'–';
-  el('hml-l').textContent=tgt.cal?Math.round(tgt.cal*.4):'–';
-  el('hml-d').textContent=tgt.cal?Math.round(tgt.cal*.3):'–';
+  el('hml-b').textContent=tgt.cal?Math.round(tgt.cal*MEAL_RATIO.b):'–';
+  el('hml-l').textContent=tgt.cal?Math.round(tgt.cal*MEAL_RATIO.l):'–';
+  el('hml-d').textContent=tgt.cal?Math.round(tgt.cal*MEAL_RATIO.d):'–';
+  const pct=v=>Math.round(v*100);
+  el('ratio-lbl-b').textContent=`早餐 ${pct(MEAL_RATIO.b)}%`;
+  el('ratio-lbl-l').textContent=`午餐 ${pct(MEAL_RATIO.l)}%`;
+  el('ratio-lbl-d').textContent=`晚餐 ${pct(MEAL_RATIO.d)}%`;
   // Today totals
   const sv=LD,td=new Date();td.setHours(0,0,0,0);LD=td;
   const s=sumMeals(getDayLog());LD=sv;
@@ -679,7 +692,7 @@ function refreshLog(){
   renderDL();
   const tgt=getTargets(),day=getDayLog();
   const dc=P==='bao'?'var(--bao)':'var(--apo)';
-  const MI={breakfast:{nm:'早餐',pct:.3},lunch:{nm:'午餐',pct:.4},dinner:{nm:'晚餐',pct:.3}};
+  const MI={breakfast:{nm:'早餐',pct:MEAL_RATIO.b},lunch:{nm:'午餐',pct:MEAL_RATIO.l},dinner:{nm:'晚餐',pct:MEAL_RATIO.d}};
   Object.keys(MI).forEach(m=>{
     const mi=MI[m],items=day[m]||[],mCal=items.reduce((s,i)=>s+(i.cal||0),0),tCal=Math.round(tgt.cal*mi.pct);
     let h=`<div class="mhd"><div class="mhdl"><div class="mdot" style="background:${dc}"></div><div class="mnm">${mi.nm}</div><div class="mcalt">${Math.round(mCal)} 卡</div></div><div style="display:flex;align-items:center;gap:8px"><div class="mtgt">/ ${tCal} 卡</div><button class="addbtn" onclick="event.stopPropagation();openModal('${m}')">+</button></div></div>`;
@@ -831,38 +844,53 @@ function setCalcMeal(m){
 
 function renderCalc(){
   const tgt=getTargets();
-  const mPct={breakfast:.3,lunch:.4,dinner:.3};
+  const mPct={breakfast:MEAL_RATIO.b,lunch:MEAL_RATIO.l,dinner:MEAL_RATIO.d};
   const mTgt={cal:tgt.cal*mPct[CALC_MEAL],pro:tgt.pro*mPct[CALC_MEAL],fat:tgt.fat*mPct[CALC_MEAL],carb:tgt.carb*mPct[CALC_MEAL]};
-  // render items
   const container=el('calc-items');
-  if(!CALC_ITEMS.length){container.innerHTML='<div style="color:var(--tx3);font-size:13px;text-align:center;padding:10px">尚無食材，點下方按鈕新增</div>';} 
-  else {
+  if(!CALC_ITEMS.length){container.innerHTML='<div style="color:var(--tx3);font-size:13px;text-align:center;padding:10px">尚無食材，點下方按鈕新增</div>';}
+  else{
     container.innerHTML=CALC_ITEMS.map((it,i)=>`
       <div class="mci">
         <div class="mci-name">${it.name}</div>
-        <input class="mci-inp" type="number" value="${it.gram}" min="0" onchange="updateCalcGram(${i},this.value)">
+        <input class="mci-inp" type="number" inputmode="decimal" value="${it.gram}" min="0" onchange="updateCalcGram(${i},this.value)">
         <div class="mci-g">g</div>
         <div class="mci-cal">${Math.round(it.cal)} 卡</div>
         <button class="mci-del" onclick="delCalcItem(${i})">×</button>
       </div>`).join('');
   }
-  // totals
   const s=CALC_ITEMS.reduce((a,it)=>({cal:a.cal+it.cal,pro:a.pro+it.pro,fat:a.fat+it.fat,carb:a.carb+it.carb}),{cal:0,pro:0,fat:0,carb:0});
   el('cr-cal').textContent=CALC_ITEMS.length?Math.round(s.cal):'–';
   el('cr-pro').textContent=CALC_ITEMS.length?s.pro.toFixed(1):'–';
   el('cr-fat').textContent=CALC_ITEMS.length?s.fat.toFixed(1):'–';
   el('cr-carb').textContent=CALC_ITEMS.length?s.carb.toFixed(1):'–';
-  // progress bars vs meal target
   if(!CALC_ITEMS.length){el('calc-prog').innerHTML='';return;}
   const items=[
-    {l:'熱量',v:s.cal,t:mTgt.cal,u:'卡',c:'#B87199'},
-    {l:'蛋白質',v:s.pro,t:mTgt.pro,u:'g',c:'#4F7EC4'},
-    {l:'脂肪',v:s.fat,t:mTgt.fat,u:'g',c:'#C07B0A'},
-    {l:'碳水',v:s.carb,t:mTgt.carb,u:'g',c:'#3A9465'},
+    {l:'熱量 🔥',v:s.cal,t:mTgt.cal,u:'卡',c:'#B87199'},
+    {l:'蛋白質 💪',v:s.pro,t:mTgt.pro,u:'g',c:'#4F7EC4'},
+    {l:'脂肪 🥑',v:s.fat,t:mTgt.fat,u:'g',c:'#C07B0A'},
+    {l:'碳水 🌾',v:s.carb,t:mTgt.carb,u:'g',c:'#3A9465'},
   ];
   el('calc-prog').innerHTML=items.map(it=>{
-    const pct=Math.min(it.t>0?(it.v/it.t)*100:0,100),ov=it.v>it.t*1.05,d=Math.round(it.v-it.t),ds=d>=0?'+'+Math.abs(d):'-'+Math.abs(d);
-    return`<div class="mcp-row"><div class="mcp-hd"><span class="mcp-name">${it.l}</span><span class="mcp-num" style="color:${ov?'var(--red)':'var(--tx3)'}">${Math.round(it.v)} / ${Math.round(it.t)} ${it.u} <b>${ds}</b></span></div><div class="bt"><div class="bf" style="width:${pct}%;background:${ov?'var(--red)':it.c};transition:width .4s"></div></div></div>`;
+    const pct=Math.min(it.t>0?(it.v/it.t)*100:0,100);
+    const ov=it.v>it.t*1.05;
+    const under=it.t>0&&it.v<it.t*0.9;
+    const diff=Math.round(it.v-it.t);
+    const diffAbs=Math.abs(diff);
+    const diffLabel=diff>0?`還多 ${diffAbs} ${it.u}`:(diff<0?`還差 ${diffAbs} ${it.u}`:'剛剛好 ✅');
+    const diffBg=ov?'#FCEAEA':under?'#FDF2DC':'#E7F5EE';
+    const diffCol=ov?'var(--red)':under?'var(--amb)':'var(--grn)';
+    return`<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:13px;font-weight:500;color:var(--tx)">${it.l}</span>
+        <span style="font-size:13px;font-weight:700;font-family:'DM Mono',monospace;color:var(--tx)">${Math.round(it.v)}<span style="font-size:11px;font-weight:400;color:var(--tx3)"> / ${Math.round(it.t)} ${it.u}</span></span>
+      </div>
+      <div style="height:8px;background:var(--sur2);border-radius:4px;overflow:hidden;margin-bottom:5px">
+        <div style="height:8px;width:${pct}%;background:${ov?'var(--red)':it.c};border-radius:4px;transition:width .4s"></div>
+      </div>
+      <div style="text-align:right">
+        <span style="font-size:13px;font-weight:700;color:${diffCol};background:${diffBg};padding:3px 10px;border-radius:99px">${diffLabel}</span>
+      </div>
+    </div>`;
   }).join('');
 }
 
@@ -950,17 +978,33 @@ function addLib(){
 }
 
 function updMP(){
-  const g=parseFloat(el('m-gram').value)||0,c=parseFloat(el('m-cal').value)||0,p=parseFloat(el('m-pro').value)||0,f=parseFloat(el('m-fat').value)||0,k=parseFloat(el('m-carb').value)||0,r=g/100;
-  el('mp-cal').textContent=Math.round(c*r);el('mp-pro').textContent=(p*r).toFixed(1);el('mp-fat').textContent=(f*r).toFixed(1);el('mp-carb').textContent=(k*r).toFixed(1);
+  const serving=parseFloat(el('m-serving').value)||100;
+  const gram=parseFloat(el('m-gram').value)||0;
+  const c=parseFloat(el('m-cal').value)||0;
+  const p=parseFloat(el('m-pro').value)||0;
+  const f=parseFloat(el('m-fat').value)||0;
+  const k=parseFloat(el('m-carb').value)||0;
+  const r=gram/serving;
+  el('mp-cal').textContent=Math.round(c*r);
+  el('mp-pro').textContent=(p*r).toFixed(1);
+  el('mp-fat').textContent=(f*r).toFixed(1);
+  el('mp-carb').textContent=(k*r).toFixed(1);
 }
 function addMan(){
-  const n=el('m-name').value.trim(),g=parseFloat(el('m-gram').value)||0;
-  const c=parseFloat(el('m-cal').value)||0,p=parseFloat(el('m-pro').value)||0,f=parseFloat(el('m-fat').value)||0,k=parseFloat(el('m-carb').value)||0;
+  const n=el('m-name').value.trim();
+  const serving=parseFloat(el('m-serving').value)||100;
+  const gram=parseFloat(el('m-gram').value)||0;
+  const c=parseFloat(el('m-cal').value)||0;
+  const p=parseFloat(el('m-pro').value)||0;
+  const f=parseFloat(el('m-fat').value)||0;
+  const k=parseFloat(el('m-carb').value)||0;
   if(!n){alert('請填入食材名稱');return;}
-  const r=g/100;
-  const food={name:n,gram:g,cal:c*r,pro:p*r,fat:f*r,carb:k*r};
+  const r=gram/serving;
+  const food={name:n,gram:gram,cal:c*r,pro:p*r,fat:f*r,carb:k*r};
   if(CUR_MODAL_TARGET==='_calc'){
-    CALC_ITEMS.push({...food,gram100:100,cal100:c,pro100:p,fat100:f,carb100:k});
+    // 換算成每100g存入以便調整克數
+    const per100=100/serving;
+    CALC_ITEMS.push({...food,gram100:100,cal100:c*per100,pro100:p*per100,fat100:f*per100,carb100:k*per100});
     renderCalc();
   } else {
     addFood(CUR_MODAL_TARGET,food);
@@ -968,9 +1012,17 @@ function addMan(){
   closeModal();
 }
 function saveLib(){
-  const n=el('m-name').value.trim(),c=parseFloat(el('m-cal').value)||0,p=parseFloat(el('m-pro').value)||0,f=parseFloat(el('m-fat').value)||0,k=parseFloat(el('m-carb').value)||0;
+  const n=el('m-name').value.trim();
+  const serving=parseFloat(el('m-serving').value)||100;
+  const c=parseFloat(el('m-cal').value)||0;
+  const p=parseFloat(el('m-pro').value)||0;
+  const f=parseFloat(el('m-fat').value)||0;
+  const k=parseFloat(el('m-carb').value)||0;
   if(!n){alert('請填入食材名稱');return;}
-  const cf=lj('dt_cf',[]);cf.push({name:n,cal:c,pro:p,fat:f,carb:k});sj('dt_cf',cf);
+  // 存入食材庫時換算成每100g
+  const per100=100/serving;
+  const cf=lj('dt_cf',[]);cf.push({name:n,cal:c*per100,pro:p*per100,fat:f*per100,carb:k*per100});
+  sj('dt_cf',cf);
   alert(`"${n}" 已加入食材庫！`);renderFLib();
 }
 
@@ -1044,6 +1096,7 @@ function saveSettings(){
 window.addEventListener('DOMContentLoaded',()=>{
   el('w-tdee').addEventListener('input',updCB);
   el('w-lbm').addEventListener('input',updCB);
+  loadRatio();
   setPerson('bao');
 });
 </script>
