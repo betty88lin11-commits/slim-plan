@@ -388,7 +388,15 @@ input:focus{border-color:var(--tx);}
   </div>
 
   <div class="card">
-    <div class="clbl">📱 加到手機主畫面</div>
+    <div class="clbl">💾 資料備份與還原</div>
+    <div class="hint">建議定期備份，避免清除快取時資料消失</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <button class="btn" style="flex:1" onclick="exportBackup()">📤 匯出備份</button>
+      <button class="btn btns" style="flex:1" onclick="el('import-file').click()">📥 匯入備份</button>
+    </div>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importBackup(event)">
+    <div id="backup-msg" style="font-size:12px;color:var(--grn);text-align:center;min-height:16px"></div>
+  </div>
     <div style="font-size:13px;color:var(--tx2);line-height:1.9">
       <b>iOS Safari：</b><br>
       下方工具列 → 分享 → 加入主畫面<br><br>
@@ -1045,7 +1053,47 @@ function saveLib(){
 }
 
 // ═══════════════════════════════════════════
-// GOOGLE SHEET SYNC
+// BACKUP & RESTORE
+// ═══════════════════════════════════════════
+function exportBackup(){
+  const data={};
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k.startsWith('dt_')) data[k]=localStorage.getItem(k);
+  }
+  const json=JSON.stringify(data,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const date=new Date().toLocaleDateString('zh-TW').replace(/\//g,'-');
+  a.href=url;a.download=`瘦瘦計畫備份_${date}.json`;
+  a.click();URL.revokeObjectURL(url);
+  const msg=el('backup-msg');
+  msg.textContent='✅ 備份已下載！';
+  setTimeout(()=>msg.textContent='',3000);
+}
+function importBackup(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      let count=0;
+      Object.keys(data).forEach(k=>{
+        if(k.startsWith('dt_')){localStorage.setItem(k,data[k]);count++;}
+      });
+      const msg=el('backup-msg');
+      msg.textContent=`✅ 已還原 ${count} 筆資料！`;
+      setTimeout(()=>msg.textContent='',3000);
+      refreshAll();
+    }catch{
+      alert('❌ 檔案格式錯誤，請選擇正確的備份檔');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
 // ═══════════════════════════════════════════
 function getGASUrl(){return localStorage.getItem('dt_gas_url')||'';}
 function saveGASUrl(url){localStorage.setItem('dt_gas_url',url);}
@@ -1116,6 +1164,20 @@ window.addEventListener('DOMContentLoaded',()=>{
   el('w-lbm').addEventListener('input',updCB);
   loadRatio();
   setPerson('bao');
+
+  // ── iOS 防止 input focus 縮放 ──────────────────────
+  // iOS 16+ 忽略 user-scalable=no，用 JS 動態鎖定 scale
+  const metaViewport = document.querySelector('meta[name=viewport]');
+  document.addEventListener('focusin', e => {
+    if(['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){
+      metaViewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+    }
+  });
+  document.addEventListener('focusout', e => {
+    if(['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){
+      metaViewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+    }
+  });
 });
 </script>
 </body>
