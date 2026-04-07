@@ -1040,9 +1040,14 @@ function addMan(){
     addFood(CUR_MODAL_TARGET,food);
   }
 
-  // 清空名稱、份量克數欄位，保留標示數值讓使用者快速輸入下一個
+  // 清空所有欄位，方便輸入下一個食材
   el('m-name').value='';
+  el('m-serving').value='';
   el('m-gram').value='100';
+  el('m-cal').value='';
+  el('m-pro').value='';
+  el('m-fat').value='';
+  el('m-carb').value='';
   el('mp-cal').textContent='–';el('mp-pro').textContent='–';el('mp-fat').textContent='–';el('mp-carb').textContent='–';
   el('m-name').focus();
 }
