@@ -71,8 +71,8 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
 .ir{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .irlbl{flex:1;font-size:13px;color:var(--tx2);}
 .irunit{font-size:12px;color:var(--tx3);min-width:20px;}
-input[type=number]{width:88px;padding:7px 10px;border-radius:var(--rs);border:1px solid var(--bdr);background:var(--sur2);font-size:14px;color:var(--tx);outline:none;transition:border-color .15s;font-family:'DM Mono',monospace;text-align:right;}
-input[type=text]{padding:7px 10px;border-radius:var(--rs);border:1px solid var(--bdr);background:var(--sur2);font-size:14px;color:var(--tx);outline:none;transition:border-color .15s;font-family:'Noto Sans TC',sans-serif;}
+input[type=number]{width:88px;padding:7px 10px;border-radius:var(--rs);border:1px solid var(--bdr);background:var(--sur2);font-size:16px;color:var(--tx);outline:none;transition:border-color .15s;font-family:'DM Mono',monospace;text-align:right;}
+input[type=text]{padding:7px 10px;border-radius:var(--rs);border:1px solid var(--bdr);background:var(--sur2);font-size:16px;color:var(--tx);outline:none;transition:border-color .15s;font-family:'Noto Sans TC',sans-serif;}
 input:focus{border-color:var(--tx);}
 
 /* CALC BOX */
@@ -125,7 +125,7 @@ input:focus{border-color:var(--tx);}
 
 /* SEARCH */
 .search-wrap{position:relative;margin-bottom:8px;}
-.search-inp{width:100%;padding:10px 12px 10px 38px;border-radius:var(--rs);border:1px solid var(--bdr);background:var(--sur2);font-size:14px;color:var(--tx);outline:none;font-family:'Noto Sans TC',sans-serif;line-height:1.4;}
+.search-inp{width:100%;padding:10px 12px 10px 38px;border-radius:var(--rs);border:1px solid var(--bdr);background:var(--sur2);font-size:16px;color:var(--tx);outline:none;font-family:'Noto Sans TC',sans-serif;line-height:1.4;}
 .search-inp:focus{border-color:var(--tx);}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--tx3);pointer-events:none;line-height:1;}
 
@@ -150,7 +150,7 @@ input:focus{border-color:var(--tx);}
 /* MANUAL FORM */
 .mfr{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
 .mflbl{width:76px;font-size:13px;color:var(--tx2);flex-shrink:0;}
-.mfinp{flex:1;padding:8px 10px;border-radius:var(--rs);border:1px solid var(--bdr);background:var(--sur2);font-size:14px;color:var(--tx);outline:none;font-family:'Noto Sans TC',sans-serif;}
+.mfinp{flex:1;padding:8px 10px;border-radius:var(--rs);border:1px solid var(--bdr);background:var(--sur2);font-size:16px;color:var(--tx);outline:none;font-family:'Noto Sans TC',sans-serif;}
 .mfinp[type=number]{font-family:'DM Mono',monospace;text-align:right;}
 .mfinp:focus{border-color:var(--tx);}
 .mfu{font-size:12px;color:var(--tx3);width:18px;}
@@ -522,8 +522,7 @@ input:focus{border-color:var(--tx);}
         <div class="pvi"><div class="pvv" id="mp-carb">–</div><div class="pvl">碳水g</div></div>
       </div>
       <div class="btnrow">
-        <button class="btn" style="flex:1" onclick="addMan()">加入</button>
-        <button class="btn btns" style="flex:1" onclick="saveLib()">存入食材庫</button>
+        <button class="btn" style="flex:1" onclick="addMan()">加入（自動存入食材庫）</button>
       </div>
     </div>
   </div>
@@ -846,6 +845,10 @@ function renderCalc(){
   const tgt=getTargets();
   const mPct={breakfast:MEAL_RATIO.b,lunch:MEAL_RATIO.l,dinner:MEAL_RATIO.d};
   const mTgt={cal:tgt.cal*mPct[CALC_MEAL],pro:tgt.pro*mPct[CALC_MEAL],fat:tgt.fat*mPct[CALC_MEAL],carb:tgt.carb*mPct[CALC_MEAL]};
+  // 已記錄在這餐的食物
+  const day=getDayLog();
+  const logged=(day[CALC_MEAL]||[]);
+  const loggedSum=logged.reduce((a,it)=>({cal:a.cal+(it.cal||0),pro:a.pro+(it.pro||0),fat:a.fat+(it.fat||0),carb:a.carb+(it.carb||0)}),{cal:0,pro:0,fat:0,carb:0});
   const container=el('calc-items');
   if(!CALC_ITEMS.length){container.innerHTML='<div style="color:var(--tx3);font-size:13px;text-align:center;padding:10px">尚無食材，點下方按鈕新增</div>';}
   else{
@@ -858,19 +861,24 @@ function renderCalc(){
         <button class="mci-del" onclick="delCalcItem(${i})">×</button>
       </div>`).join('');
   }
-  const s=CALC_ITEMS.reduce((a,it)=>({cal:a.cal+it.cal,pro:a.pro+it.pro,fat:a.fat+it.fat,carb:a.carb+it.carb}),{cal:0,pro:0,fat:0,carb:0});
-  el('cr-cal').textContent=CALC_ITEMS.length?Math.round(s.cal):'–';
-  el('cr-pro').textContent=CALC_ITEMS.length?s.pro.toFixed(1):'–';
-  el('cr-fat').textContent=CALC_ITEMS.length?s.fat.toFixed(1):'–';
-  el('cr-carb').textContent=CALC_ITEMS.length?s.carb.toFixed(1):'–';
-  if(!CALC_ITEMS.length){el('calc-prog').innerHTML='';return;}
+  const calcSum=CALC_ITEMS.reduce((a,it)=>({cal:a.cal+it.cal,pro:a.pro+it.pro,fat:a.fat+it.fat,carb:a.carb+it.carb}),{cal:0,pro:0,fat:0,carb:0});
+  el('cr-cal').textContent=CALC_ITEMS.length?Math.round(calcSum.cal):'–';
+  el('cr-pro').textContent=CALC_ITEMS.length?calcSum.pro.toFixed(1):'–';
+  el('cr-fat').textContent=CALC_ITEMS.length?calcSum.fat.toFixed(1):'–';
+  el('cr-carb').textContent=CALC_ITEMS.length?calcSum.carb.toFixed(1):'–';
+  if(!CALC_ITEMS.length){
+    el('calc-prog').innerHTML=logged.length?`<div style="font-size:12px;color:var(--tx3);text-align:center;padding:4px 0">已記錄 ${Math.round(loggedSum.cal)} 卡 / 目標 ${Math.round(mTgt.cal)} 卡</div>`:'';
+    return;
+  }
+  const total={cal:loggedSum.cal+calcSum.cal,pro:loggedSum.pro+calcSum.pro,fat:loggedSum.fat+calcSum.fat,carb:loggedSum.carb+calcSum.carb};
   const items=[
-    {l:'熱量 🔥',v:s.cal,t:mTgt.cal,u:'卡',c:'#B87199'},
-    {l:'蛋白質 💪',v:s.pro,t:mTgt.pro,u:'g',c:'#4F7EC4'},
-    {l:'脂肪 🥑',v:s.fat,t:mTgt.fat,u:'g',c:'#C07B0A'},
-    {l:'碳水 🌾',v:s.carb,t:mTgt.carb,u:'g',c:'#3A9465'},
+    {l:'熱量 🔥',v:total.cal,t:mTgt.cal,u:'卡',c:'#B87199'},
+    {l:'蛋白質 💪',v:total.pro,t:mTgt.pro,u:'g',c:'#4F7EC4'},
+    {l:'脂肪 🥑',v:total.fat,t:mTgt.fat,u:'g',c:'#C07B0A'},
+    {l:'碳水 🌾',v:total.carb,t:mTgt.carb,u:'g',c:'#3A9465'},
   ];
-  el('calc-prog').innerHTML=items.map(it=>{
+  const hasLogged=logged.length>0;
+  el('calc-prog').innerHTML=(hasLogged?`<div style="font-size:11px;color:var(--tx3);margin-bottom:6px">含已記錄 ${Math.round(loggedSum.cal)} 卡，合計比對目標：</div>`:'')+items.map(it=>{
     const pct=Math.min(it.t>0?(it.v/it.t)*100:0,100);
     const ov=it.v>it.t*1.05;
     const under=it.t>0&&it.v<it.t*0.9;
@@ -938,7 +946,7 @@ function renderFLib(){
   const q=el('search-inp')?el('search-inp').value:'';
   const foods=getFoods(q);
   el('flib').innerHTML=foods.length
-    ? foods.map((f,i)=>`<div class="li${SEL===i?' sel':''}" onclick="selF(${i},'${q}')"><div class="lin">${f.name}</div><div class="lim">${f.cal}卡 | 蛋${f.pro}g 脂${f.fat}g 碳${f.carb}g</div></div>`).join('')
+    ? foods.map((f,i)=>`<div class="li${SEL===i?' sel':''}" onclick="selF(${i},'${q}')"><div class="lin">${f.name}</div><div class="lim">${Math.round(f.cal)}卡 | 蛋${Math.round(f.pro)}g 脂${Math.round(f.fat)}g 碳${Math.round(f.carb)}g</div></div>`).join('')
     : '<div style="color:var(--tx3);font-size:13px;text-align:center;padding:12px">找不到食材，可切換到「手動輸入」</div>';
 }
 
@@ -990,6 +998,7 @@ function updMP(){
   el('mp-fat').textContent=(f*r).toFixed(1);
   el('mp-carb').textContent=(k*r).toFixed(1);
 }
+
 function addMan(){
   const n=el('m-name').value.trim();
   const serving=parseFloat(el('m-serving').value)||100;
@@ -1001,29 +1010,33 @@ function addMan(){
   if(!n){alert('請填入食材名稱');return;}
   const r=gram/serving;
   const food={name:n,gram:gram,cal:c*r,pro:p*r,fat:f*r,carb:k*r};
+
+  // 自動存入食材庫（換算成每100g）
+  const per100=100/serving;
+  const cf=lj('dt_cf',[]);
+  if(!cf.find(x=>x.name===n)){
+    cf.push({name:n,cal:Math.round(c*per100),pro:Math.round(p*per100*10)/10,fat:Math.round(f*per100*10)/10,carb:Math.round(k*per100*10)/10});
+    sj('dt_cf',cf);
+  }
+
   if(CUR_MODAL_TARGET==='_calc'){
-    // 換算成每100g存入以便調整克數
-    const per100=100/serving;
-    CALC_ITEMS.push({...food,gram100:100,cal100:c*per100,pro100:p*per100,fat100:f*per100,carb100:k*per100});
+    const per100r=100/serving;
+    CALC_ITEMS.push({...food,gram100:100,cal100:c*per100r,pro100:p*per100r,fat100:f*per100r,carb100:k*per100r});
     renderCalc();
   } else {
     addFood(CUR_MODAL_TARGET,food);
   }
-  closeModal();
+
+  // 清空名稱、份量克數欄位，保留標示數值讓使用者快速輸入下一個
+  el('m-name').value='';
+  el('m-gram').value='100';
+  el('mp-cal').textContent='–';el('mp-pro').textContent='–';el('mp-fat').textContent='–';el('mp-carb').textContent='–';
+  el('m-name').focus();
 }
+
 function saveLib(){
-  const n=el('m-name').value.trim();
-  const serving=parseFloat(el('m-serving').value)||100;
-  const c=parseFloat(el('m-cal').value)||0;
-  const p=parseFloat(el('m-pro').value)||0;
-  const f=parseFloat(el('m-fat').value)||0;
-  const k=parseFloat(el('m-carb').value)||0;
-  if(!n){alert('請填入食材名稱');return;}
-  // 存入食材庫時換算成每100g
-  const per100=100/serving;
-  const cf=lj('dt_cf',[]);cf.push({name:n,cal:c*per100,pro:p*per100,fat:f*per100,carb:k*per100});
-  sj('dt_cf',cf);
-  alert(`"${n}" 已加入食材庫！`);renderFLib();
+  // 保留舊的 saveLib 以防萬一，但實際上 addMan 已自動存入
+  addMan();
 }
 
 // ═══════════════════════════════════════════
